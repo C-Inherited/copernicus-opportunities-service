@@ -1,6 +1,6 @@
 package com.copernicus.opportunity.service.interfaces;
 
-import com.copernicus.opportunity.controller.DTO.OpportunityDTO;
+import com.copernicus.opportunity.dto.OpportunityDTO;
 
 import java.util.List;
 import java.util.Optional;

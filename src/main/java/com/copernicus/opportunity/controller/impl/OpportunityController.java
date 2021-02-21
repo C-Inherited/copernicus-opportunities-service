@@ -1,7 +1,7 @@
 package com.copernicus.opportunity.controller.impl;
 
 import com.copernicus.opportunity.controller.interfaces.IOpportunityController;
-import com.copernicus.opportunity.controller.DTO.OpportunityDTO;
+import com.copernicus.opportunity.dto.OpportunityDTO;
 import com.copernicus.opportunity.service.interfaces.IOpportunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

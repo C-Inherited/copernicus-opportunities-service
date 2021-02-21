@@ -1,4 +1,4 @@
-package com.copernicus.opportunity.controller.DTO;
+package com.copernicus.opportunity.dto;
 
 import com.copernicus.opportunity.model.Opportunity;
 

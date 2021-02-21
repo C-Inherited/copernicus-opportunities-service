@@ -10,7 +10,6 @@ import java.util.List;
 @Repository
 public interface OpportunityRepository extends JpaRepository<Opportunity, Integer> {
 
-
     List<Opportunity> getOpportunityBySalesRepId(Integer salesRepId);
 
     List<Opportunity> getOpportunityBySalesRepIdAndStatus(Integer salesRepId, Status status);
