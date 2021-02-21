@@ -2,6 +2,7 @@ package com.ironhack.opportunity.service.impl;
 
 import com.ironhack.opportunity.controller.DTO.OpportunityDTO;
 import com.ironhack.opportunity.enums.Product;
+import com.ironhack.opportunity.enums.Status;
 import com.ironhack.opportunity.model.Opportunity;
 import com.ironhack.opportunity.repository.AccountRepository;
 import com.ironhack.opportunity.repository.ContactRepository;
@@ -14,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -84,6 +87,18 @@ public class OpportunityService implements IOpportunityService {
             return false;
         }
         return true;
+    }
+
+
+    @Override
+    public List<OpportunityDTO> findOpportunitiesBySalesRep(Integer salesRepId, Optional<String> status) {
+        if (status.isEmpty()){
+            return opportunityRepository.getOpportunityBySalesRepId(salesRepId).stream()
+                    .map(opportunity -> OpportunityDTO.parseFromOpportunity(opportunity)).collect(Collectors.toList());
+        }else{
+            return opportunityRepository.getOpportunityBySalesRepIdAndStatus(salesRepId, Status.valueOf(status.get())).stream()
+                    .map(opportunity -> OpportunityDTO.parseFromOpportunity(opportunity)).collect(Collectors.toList());
+        }
     }
 
 }
