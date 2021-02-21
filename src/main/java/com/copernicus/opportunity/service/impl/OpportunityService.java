@@ -4,7 +4,6 @@ import com.copernicus.opportunity.dto.OpportunityDTO;
 import com.copernicus.opportunity.dto.RequestDTO;
 import com.copernicus.opportunity.enums.*;
 import com.copernicus.opportunity.model.Opportunity;
-import com.copernicus.opportunity.repository.AccountRepository;
 import com.copernicus.opportunity.repository.ContactRepository;
 import com.copernicus.opportunity.repository.OpportunityRepository;
 import com.copernicus.opportunity.service.interfaces.IOpportunityService;
@@ -107,7 +106,7 @@ public class OpportunityService implements IOpportunityService {
         }
 
         Opportunity opportunity = opportunityRepository.getOne(requestDTO.getId());
-        opportunity.setStatus(Product.valueOf(requestDTO.getStatus()));
+        opportunity.setStatus(Status.valueOf(requestDTO.getStatus()));
         opportunityRepository.save(opportunity);
 
         if (opportunity.getStatus().equals(Status.CLOSED_LOST)){
