@@ -1,6 +1,6 @@
 package com.copernicus.opportunity.model;
 
-import com.copernicus.opportunity.enums.Industry;
+import com.copernicus.opportunity.enums.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;

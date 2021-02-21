@@ -1,8 +1,8 @@
 package com.copernicus.opportunity.service.impl;
 
 import com.copernicus.opportunity.dto.OpportunityDTO;
-import com.copernicus.opportunity.enums.Product;
-import com.copernicus.opportunity.enums.Status;
+import com.copernicus.opportunity.dto.RequestDTO;
+import com.copernicus.opportunity.enums.*;
 import com.copernicus.opportunity.model.Opportunity;
 import com.copernicus.opportunity.repository.AccountRepository;
 import com.copernicus.opportunity.repository.ContactRepository;
@@ -100,5 +100,26 @@ public class OpportunityService implements IOpportunityService {
                     .map(OpportunityDTO::parseFromOpportunity).collect(Collectors.toList());
         }
     }
+
+    public Integer patchStatusOpportunity(RequestDTO requestDTO) {
+        if (!opportunityRepository.existsById(requestDTO.getId())){
+            return 0;
+        }
+
+        Opportunity opportunity = opportunityRepository.getOne(requestDTO.getId());
+        opportunity.setStatus(Product.valueOf(requestDTO.getStatus()));
+        opportunityRepository.save(opportunity);
+
+        if (opportunity.getStatus().equals(Status.CLOSED_LOST)){
+            return -1;
+        }
+        if (opportunity.getStatus().equals(Status.CLOSED_WON)){
+            return 1;
+        }
+
+        return 0;
+
+    }
+
 
 }

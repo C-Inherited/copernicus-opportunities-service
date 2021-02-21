@@ -1,11 +1,7 @@
 package com.copernicus.opportunity.model;
 
-import com.copernicus.opportunity.enums.Product;
-import com.copernicus.opportunity.enums.Status;
-
+import com.copernicus.opportunity.enums.*;
 import javax.persistence.*;
-
-import static com.copernicus.opportunity.utils.Colors.*;
 
 @Entity
 public class Opportunity {
