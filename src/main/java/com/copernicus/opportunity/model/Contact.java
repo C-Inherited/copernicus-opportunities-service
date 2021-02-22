@@ -10,7 +10,7 @@ public class Contact {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String name;
     private String phoneNumber;
     private String email;
@@ -23,21 +23,21 @@ public class Contact {
     public Contact() {
     }
 
-    public Contact(String name,
-                   String phoneNumber,
-                   String email,
-                   String companyName) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.companyName = companyName;
+
+    public Contact(String name, String phoneNumber, String email, String companyName, Account account) {
+        setName(name);
+        setPhoneNumber(phoneNumber);
+        setEmail(email);
+        setCompanyName(companyName);
+        setAccount(account);
     }
 
-    public int getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -98,8 +98,9 @@ public class Contact {
         if (o == null || getClass() != o.getClass()) return false;
         Contact contact = (Contact) o;
         return Objects.equals(name, contact.name) &&
-               Objects.equals(phoneNumber, contact.phoneNumber) &&
-               Objects.equals(email, contact.email) &&
-               Objects.equals(companyName, contact.companyName);
+                Objects.equals(phoneNumber, contact.phoneNumber) &&
+                Objects.equals(email, contact.email) &&
+                Objects.equals(companyName, contact.companyName);
     }
+
 }

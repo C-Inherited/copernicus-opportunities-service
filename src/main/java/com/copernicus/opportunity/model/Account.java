@@ -1,5 +1,6 @@
 package com.copernicus.opportunity.model;
 
+import com.copernicus.opportunity.dto.AccountDTO;
 import com.copernicus.opportunity.enums.Industry;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Fetch;
@@ -9,9 +10,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.copernicus.opportunity.utils.Colors.*;
-
 
 @Entity
 public class Account {
@@ -26,49 +27,56 @@ public class Account {
     private String city;
     private String country;
 
-    @OneToMany(fetch=FetchType.EAGER, mappedBy = "account", cascade = CascadeType.ALL)
-    @Fetch(FetchMode.SUBSELECT)  // we need this to have several "eager"
-    @JsonIgnore
-    private List<Contact> contactList = new ArrayList<>();
-
-    @OneToMany(fetch=FetchType.EAGER, mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "account", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SUBSELECT)
     @JsonIgnore
-    private List<Opportunity> opportunityList = new ArrayList<>();
+    private List<Contact> contactList;
 
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "account", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SUBSELECT)
+    @JsonIgnore
+    private List<Opportunity> opportunityList;
+
+    // Constructor
 
     public Account() {
     }
 
-    public Account(Industry industry, int employeeCount, String city, String country,
-                   Contact contact, Opportunity opportunity) {
-        this.employeeCount = employeeCount;
-        this.city = city;
-        this.country = country;
-        this.industry = industry;
-        this.contactList.add(contact);
-        this.opportunityList.add(opportunity);
+    public Account(Industry industry, int employeeCount, String city, String country) {
+        setIndustry(industry);
+        setEmployeeCount(employeeCount);
+        setCity(city);
+        setCountry(country);
+        setContactList(new ArrayList<>());
+        setOpportunityList(new ArrayList<>());
     }
 
-    public Account(Industry industry, int employeeCount, String city, String country,
-                   List<Contact> contacts, List<Opportunity> opportunities) {
-        this.employeeCount = employeeCount;
-        this.city = city;
-        this.country = country;
-        this.industry = industry;
-        for (Contact contact : contacts){
-            this.contactList.add(contact);
-        }
-        for (Opportunity opportunity : opportunities){
-            this.opportunityList.add(opportunity);
-        }
+    public static Account parseFromDTO(AccountDTO accountDTO) {
+        Account account = new Account(
+                Industry.valueOf(accountDTO.getIndustry()),
+                accountDTO.getEmployeeCount(),
+                accountDTO.getCity(),
+                accountDTO.getCountry()
+        );
+        account.setId(accountDTO.getId());
+        return account;
     }
 
-    public int getId() {
+    // Method to add a contact to a contact list.
+    public void addToContactList(Contact contact){
+        getContactList().add(contact);
+    }
+
+    // Method to add an opportunity to an opportunity list.
+    public void addToOpportunityList(Opportunity opportunity){
+        getOpportunityList().add(opportunity);
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -80,11 +88,11 @@ public class Account {
         this.industry = industry;
     }
 
-    public int getEmployeeCount() {
+    public Integer getEmployeeCount() {
         return employeeCount;
     }
 
-    public void setEmployeeCount(int employeeCount) {
+    public void setEmployeeCount(Integer employeeCount) {
         this.employeeCount = employeeCount;
     }
 
@@ -120,6 +128,8 @@ public class Account {
         this.opportunityList = opportunityList;
     }
 
+// Override of the toString() method to display the Accounts in a more friendly way.
+
     @Override
     public String toString() {
         return ANSI_CYAN + ANSI_BOLD +
@@ -129,7 +139,12 @@ public class Account {
                 "\nemployeeCount = " + employeeCount +
                 ", \ncity = " + city +
                 ", \ncountry = " + country +
-                ", \nopportunityList:\n" + opportunityList;
+                ", \ncontact list = " + contactList.stream()
+                .map(Contact::toString)
+                .collect(Collectors.joining("\n")) +
+                ", \nopportunity List:\n" + opportunityList.stream()
+                .map(Opportunity::toString)
+                .collect(Collectors.joining("\n"));
     }
 
     @Override

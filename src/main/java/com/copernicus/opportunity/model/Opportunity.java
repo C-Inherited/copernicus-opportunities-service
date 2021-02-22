@@ -1,7 +1,6 @@
 package com.copernicus.opportunity.model;
 
-import com.copernicus.opportunity.enums.Product;
-import com.copernicus.opportunity.enums.Status;
+import com.copernicus.opportunity.enums.*;
 
 import javax.persistence.*;
 
@@ -17,7 +16,7 @@ public class Opportunity {
     private Product product;
     private Integer quantity;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name="contact_id")
     private Contact decisionMaker;
 
@@ -34,19 +33,20 @@ public class Opportunity {
     }
 
     public Opportunity(Product product, Integer quantity,
-                       Contact decisionMaker, Integer salesRepId) {
-        this.quantity = quantity;
-        this.product = product;
-        this.decisionMaker = decisionMaker;
-        this.salesRepId = salesRepId;
-        this.status = Status.OPEN;
+                       Contact decisionMaker, Integer salesRepId, Account account) {
+        setProduct(product);
+        setQuantity(quantity);
+        setDecisionMaker(decisionMaker);
+        setSalesRepId(salesRepId);
+        setAccount(account);
+        status = Status.OPEN;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -62,7 +62,7 @@ public class Opportunity {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
