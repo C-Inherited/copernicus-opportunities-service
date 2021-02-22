@@ -2,10 +2,12 @@ package com.copernicus.opportunity.controller.impl;
 
 import com.copernicus.opportunity.controller.interfaces.IOpportunityController;
 import com.copernicus.opportunity.dto.OpportunityDTO;
+import com.copernicus.opportunity.dto.RequestDTO;
 import com.copernicus.opportunity.service.interfaces.IOpportunityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,5 +45,10 @@ public class OpportunityController implements IOpportunityController {
     @GetMapping("/opportunity/all/{salesRepId}")
     public List<OpportunityDTO> findOpportunitiesBySalesRep(@PathVariable Integer salesRepId, @RequestParam Optional<String> status) {
         return opportunityService.findOpportunitiesBySalesRep(salesRepId, status);
+    }
+
+    @PatchMapping("/opportunity/")
+    public Integer patchStatusOpportunity(@RequestBody @Valid RequestDTO requestDTO) {
+        return opportunityService.patchStatusOpportunity(requestDTO);
     }
 }
