@@ -111,9 +111,15 @@ public class OpportunityService implements IOpportunityService {
         }
     }
 
+
     private Opportunity createOpportunityFromDTO(OpportunityDTO opportunityDTO){
-        AccountDTO accountDTO = accountClient.getAccount(opportunityDTO.getAccountId()); // todo: circuitbreaker
-        ContactDTO contactDTO = contactClient.getContact(opportunityDTO.getContactId()); // todo: circuitbreaker
+        CircuitBreaker accountCircuit = circuitBreakerFactory.create("account-service");
+        CircuitBreaker contactCircuit = circuitBreakerFactory.create("contact-service");
+
+        AccountDTO accountDTO = accountCircuit.run(() -> accountClient.getAccount(opportunityDTO.getAccountId()),
+                                                   throwable -> accountFallback(opportunityDTO.getAccountId()));
+        ContactDTO contactDTO = contactCircuit.run(() -> contactClient.getContact(opportunityDTO.getContactId()),
+                                                   throwable -> contactFallback(opportunityDTO.getContactId()));
 
         Account account = Account.parseFromDTO(accountDTO);
         Contact contact = new Contact(contactDTO.getName(),
@@ -128,6 +134,14 @@ public class OpportunityService implements IOpportunityService {
                 opportunityDTO.getSalesRepId(),
                 account);
         return opportunity;
+    }
+
+    private AccountDTO accountFallback(Integer id){
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+id+" not found");
+    }
+
+    private ContactDTO contactFallback(Integer id){
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact with id "+id+" not found");
     }
 
 }

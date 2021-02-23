@@ -1,7 +1,7 @@
 package com.copernicus.opportunity.service.interfaces;
 
 import com.copernicus.opportunity.dto.OpportunityDTO;
-import com.copernicus.opportunity.dto.RequestDTO;
+import com.copernicus.opportunity.model.Opportunity;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +18,4 @@ public interface IOpportunityService {
     boolean deleteOpportunity(Integer id);
 
     List<OpportunityDTO> findOpportunitiesBySalesRep(Integer salesRepId, Optional<String> status);
-
-    Integer patchStatusOpportunity(RequestDTO requestDTO);
 }
