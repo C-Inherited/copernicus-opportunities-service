@@ -38,7 +38,7 @@ public class OpportunityController implements IOpportunityController {
 
 
     @GetMapping("/opportunity/{id}")
-    public OpportunityDTO getOpportunity(@PathVariable Integer id) {
+    public OpportunityDTO getOpportunity(@PathVariable Integer id, @RequestHeader(value = "Authorization") String authorizationHeader) {
         return opportunityService.getOpportunity(id);
     }
 
@@ -48,17 +48,17 @@ public class OpportunityController implements IOpportunityController {
     }
 
     @PostMapping("/opportunity")
-    public OpportunityDTO postOpportunity(@RequestBody OpportunityDTO opportunityDTO) {
+    public OpportunityDTO postOpportunity(@RequestBody OpportunityDTO opportunityDTO, @RequestHeader(value = "Authorization") String authorizationHeader) {
         return opportunityService.postOpportunity(opportunityDTO);
     }
 
     @PutMapping("/opportunity/{id}")
-    public OpportunityDTO putOpportunity(@PathVariable Integer id, @RequestBody OpportunityDTO opportunityDTO) {
+    public OpportunityDTO putOpportunity(@PathVariable Integer id, @RequestBody OpportunityDTO opportunityDTO, @RequestHeader(value = "Authorization") String authorizationHeader) {
         return opportunityService.putOpportunity(id, opportunityDTO);
     }
     
     @GetMapping("/opportunity/all/{salesRepId}")
-    public List<OpportunityDTO> findOpportunitiesBySalesRep(@PathVariable Integer salesRepId, @RequestParam Optional<String> status) {
+    public List<OpportunityDTO> findOpportunitiesBySalesRep(@PathVariable Integer salesRepId, @RequestParam Optional<String> status, @RequestHeader(value = "Authorization") String authorizationHeader) {
         return opportunityService.findOpportunitiesBySalesRep(salesRepId, status);
     }
 
