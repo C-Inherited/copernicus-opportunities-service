@@ -1,9 +1,10 @@
-package com.copernicus.opportunity.security;
+package com.copernicus.opportunity.auth.security;
 
 import com.copernicus.opportunity.clients.AccountClient;
 import com.copernicus.opportunity.clients.ContactClient;
+import com.copernicus.opportunity.controller.impl.AuthOpportunityController;
 import com.copernicus.opportunity.controller.impl.OpportunityController;
-import com.copernicus.opportunity.dto.AuthenticationRequest;
+import com.copernicus.opportunity.auth.dto.AuthenticationRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class RegistrationRoutine {
             if (responseEntity != null) {
                 parseJWTContact(responseEntity);
                 isContactRegistered = true;
-                log.info("Registered with contact-service auth token: {}", OpportunityController.getContactAuthOk());
+                log.info("Registered with contact-service auth token: {}", AuthOpportunityController.getContactAuthOk());
             }
         }
     }
@@ -62,19 +63,19 @@ public class RegistrationRoutine {
             if (responseEntity != null) {
                 parseJWTAccount(responseEntity);
                 isAccountRegistered = true;
-                log.info("Registered with account-service auth token: {}", OpportunityController.getAccountAuthOk());
+                log.info("Registered with account-service auth token: {}", AuthOpportunityController.getAccountAuthOk());
             }
         }
     }
 
     private void parseJWTAccount(ResponseEntity<?> responseEntity) {
         String auth = Objects.requireNonNull(responseEntity.getBody()).toString();
-        OpportunityController.setAccountAuthOk(auth.substring(5, auth.length() - 1));
+        AuthOpportunityController.setAccountAuthOk(auth.substring(5, auth.length() - 1));
     }
 
     private void parseJWTContact(ResponseEntity<?> responseEntity) {
         String auth = Objects.requireNonNull(responseEntity.getBody()).toString();
-        OpportunityController.setContactAuthOk(auth.substring(5, auth.length() - 1));
+        AuthOpportunityController.setContactAuthOk(auth.substring(5, auth.length() - 1));
     }
 
     private ResponseEntity<?> fallbackTransaction(String serviceName) {

@@ -1,4 +1,4 @@
-package com.copernicus.opportunity.dto;
+package com.copernicus.opportunity.auth.dto;
 
 import java.io.Serializable;
 

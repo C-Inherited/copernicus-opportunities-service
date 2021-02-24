@@ -1,7 +1,7 @@
-package com.copernicus.opportunity.security;
+package com.copernicus.opportunity.auth.security;
 
 
-import com.copernicus.opportunity.filters.JwtRequestFilter;
+import com.copernicus.opportunity.auth.filters.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;

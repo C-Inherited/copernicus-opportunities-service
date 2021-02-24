@@ -2,6 +2,7 @@ package com.copernicus.opportunity.service.impl;
 
 import com.copernicus.opportunity.clients.AccountClient;
 import com.copernicus.opportunity.clients.ContactClient;
+import com.copernicus.opportunity.controller.impl.AuthOpportunityController;
 import com.copernicus.opportunity.controller.impl.OpportunityController;
 import com.copernicus.opportunity.dto.AccountDTO;
 import com.copernicus.opportunity.dto.ContactDTO;
@@ -107,10 +108,10 @@ public class OpportunityService implements IOpportunityService {
         CircuitBreaker accountCircuit = circuitBreakerFactory.create("account-service");
         CircuitBreaker contactCircuit = circuitBreakerFactory.create("contact-service");
 
-        AccountDTO accountDTO = accountCircuit.run(() -> accountClient.getAccount(opportunityDTO.getAccountId(), "Bearer "+ OpportunityController.getAccountAuthOk()),
-                                                   throwable -> accountFallback(opportunityDTO.getAccountId()));
-        ContactDTO contactDTO = contactCircuit.run(() -> contactClient.getContact(opportunityDTO.getContactId(), "Bearer "+ OpportunityController.getContactAuthOk()),
-                                                   throwable -> contactFallback(opportunityDTO.getContactId()));
+        AccountDTO accountDTO = accountCircuit.run(() -> accountClient.getAccount(opportunityDTO.getAccountId(), "Bearer "+ AuthOpportunityController.getAccountAuthOk()),
+                                                   throwable -> (AccountDTO) serviceFallback("account-service"));
+        ContactDTO contactDTO = contactCircuit.run(() -> contactClient.getContact(opportunityDTO.getContactId(), "Bearer "+ AuthOpportunityController.getContactAuthOk()),
+                                                   throwable -> (ContactDTO) serviceFallback("contact-service"));
 
         Account account = Account.parseFromDTO(accountDTO);
 
@@ -134,12 +135,8 @@ public class OpportunityService implements IOpportunityService {
         return opportunity;
     }
 
-    private AccountDTO accountFallback(Integer id){
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+id+" not found");
-    }
-
-    private ContactDTO contactFallback(Integer id){
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Contact with id "+id+" not found");
+    private Object serviceFallback(String serviceName){
+        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "The service "+serviceName+" is not available");
     }
 
 }

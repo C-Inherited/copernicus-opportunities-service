@@ -1,8 +1,8 @@
-package com.copernicus.opportunity.filters;
+package com.copernicus.opportunity.auth.filters;
 
 
-import com.copernicus.opportunity.security.MyUserDetailsService;
-import com.copernicus.opportunity.utils.JwtUtil;
+import com.copernicus.opportunity.auth.security.MyUserDetailsService;
+import com.copernicus.opportunity.auth.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

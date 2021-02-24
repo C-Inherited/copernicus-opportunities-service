@@ -1,4 +1,4 @@
-package com.copernicus.opportunity.utils;
+package com.copernicus.opportunity.auth.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

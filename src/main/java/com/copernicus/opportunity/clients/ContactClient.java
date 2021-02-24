@@ -1,6 +1,6 @@
 package com.copernicus.opportunity.clients;
 
-import com.copernicus.opportunity.dto.AuthenticationRequest;
+import com.copernicus.opportunity.auth.dto.AuthenticationRequest;
 import com.copernicus.opportunity.dto.ContactDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 package com.copernicus.opportunity.clients;
 
 import com.copernicus.opportunity.dto.AccountDTO;
-import com.copernicus.opportunity.dto.AuthenticationRequest;
+import com.copernicus.opportunity.auth.dto.AuthenticationRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

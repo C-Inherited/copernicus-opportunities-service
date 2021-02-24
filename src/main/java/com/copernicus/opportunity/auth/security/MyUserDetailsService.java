@@ -1,4 +1,4 @@
-package com.copernicus.opportunity.security;
+package com.copernicus.opportunity.auth.security;
 
 import com.opencsv.CSVReader;
 import org.springframework.security.core.userdetails.User;
