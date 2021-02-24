@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient("account-service")
 public interface AccountClient {
     @GetMapping("/account/{id}")
-    AccountDTO getAccount(@PathVariable(name = "id") Integer id);
+    AccountDTO getAccount(@PathVariable(name = "id") Integer id, @RequestHeader(value = "Authorization") String authorizationHeader);
 
     @RequestMapping(value = "account/authenticate", method = RequestMethod.POST)
     ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest);

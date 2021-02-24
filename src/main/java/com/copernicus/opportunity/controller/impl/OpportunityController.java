@@ -34,7 +34,8 @@ public class OpportunityController implements IOpportunityController {
     @Autowired
     IOpportunityService opportunityService;
 
-    private static String validationAuthOk;
+    private static String accountAuthOk;
+    private static String contactAuthOk;
 
 
     @GetMapping("/opportunity/{id}")
@@ -82,11 +83,20 @@ public class OpportunityController implements IOpportunityController {
     }
 
 
-    public static String getValidationAuthOk() {
-        return validationAuthOk;
+    public static String getAccountAuthOk() {
+        return accountAuthOk;
     }
 
-    public static void setValidationAuthOk(String validationAuthOk) {
-        OpportunityController.validationAuthOk = validationAuthOk;
+    public static void setAccountAuthOk(String accountAuthOk) {
+        OpportunityController.accountAuthOk = accountAuthOk;
     }
+
+    public static String getContactAuthOk() {
+        return contactAuthOk;
+    }
+
+    public static void setContactAuthOk(String contactAuthOk) {
+        OpportunityController.contactAuthOk = contactAuthOk;
+    }
+
 }

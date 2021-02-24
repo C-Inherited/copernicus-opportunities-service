@@ -2,6 +2,7 @@ package com.copernicus.opportunity.service.impl;
 
 import com.copernicus.opportunity.clients.AccountClient;
 import com.copernicus.opportunity.clients.ContactClient;
+import com.copernicus.opportunity.controller.impl.OpportunityController;
 import com.copernicus.opportunity.dto.AccountDTO;
 import com.copernicus.opportunity.dto.ContactDTO;
 import com.copernicus.opportunity.dto.OpportunityDTO;
@@ -106,9 +107,9 @@ public class OpportunityService implements IOpportunityService {
         CircuitBreaker accountCircuit = circuitBreakerFactory.create("account-service");
         CircuitBreaker contactCircuit = circuitBreakerFactory.create("contact-service");
 
-        AccountDTO accountDTO = accountCircuit.run(() -> accountClient.getAccount(opportunityDTO.getAccountId()),
+        AccountDTO accountDTO = accountCircuit.run(() -> accountClient.getAccount(opportunityDTO.getAccountId(), "Bearer "+ OpportunityController.getAccountAuthOk()),
                                                    throwable -> accountFallback(opportunityDTO.getAccountId()));
-        ContactDTO contactDTO = contactCircuit.run(() -> contactClient.getContact(opportunityDTO.getContactId()),
+        ContactDTO contactDTO = contactCircuit.run(() -> contactClient.getContact(opportunityDTO.getContactId(), "Bearer "+ OpportunityController.getContactAuthOk()),
                                                    throwable -> contactFallback(opportunityDTO.getContactId()));
 
         Account account = Account.parseFromDTO(accountDTO);
