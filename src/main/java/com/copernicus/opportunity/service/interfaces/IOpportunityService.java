@@ -15,7 +15,5 @@ public interface IOpportunityService {
 
     OpportunityDTO putOpportunity(Integer id, OpportunityDTO opportunityDTO);
 
-    boolean deleteOpportunity(Integer id);
-
     List<OpportunityDTO> findOpportunitiesBySalesRep(Integer salesRepId, Optional<String> status);
 }

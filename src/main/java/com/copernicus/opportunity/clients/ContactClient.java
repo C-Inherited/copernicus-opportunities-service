@@ -1,12 +1,16 @@
 package com.copernicus.opportunity.clients;
 
+import com.copernicus.opportunity.dto.AuthenticationRequest;
 import com.copernicus.opportunity.dto.ContactDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient("contact-service")
 public interface ContactClient {
     @GetMapping("/contact/{id}")
-    public ContactDTO getContact(@PathVariable Integer id);
+    ContactDTO getContact(@PathVariable Integer id);
+
+    @RequestMapping(value = "contact/authenticate", method = RequestMethod.POST)
+    ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest);
 }

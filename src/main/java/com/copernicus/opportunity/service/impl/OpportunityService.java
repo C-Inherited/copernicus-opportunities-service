@@ -49,7 +49,7 @@ public class OpportunityService implements IOpportunityService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Opportunity with ID "+id+" not found");
 
         OpportunityDTO opportunityDTO = new OpportunityDTO();
-        OpportunityDTO.parseFromOpportunity(opportunityRepository.getOne(id));
+        opportunityDTO = OpportunityDTO.parseFromOpportunity(opportunityRepository.getOne(id));
 
         return opportunityDTO;
     }
@@ -71,7 +71,7 @@ public class OpportunityService implements IOpportunityService {
     public OpportunityDTO postOpportunity(OpportunityDTO opportunityDTO) {
         Opportunity opportunity = createOpportunityFromDTO(opportunityDTO);
         opportunity = opportunityRepository.save(opportunity);
-        OpportunityDTO.parseFromOpportunity(opportunity);
+        opportunityDTO = OpportunityDTO.parseFromOpportunity(opportunity);
 
         return opportunityDTO;
     }
@@ -88,16 +88,6 @@ public class OpportunityService implements IOpportunityService {
         opportunityRepository.save(opportunity);
 
         return opportunityDTO;
-    }
-
-
-    public boolean deleteOpportunity(Integer id) {
-        try{
-            opportunityRepository.deleteById(id);
-        }catch(Exception e){
-            return false;
-        }
-        return true;
     }
 
 
@@ -122,11 +112,18 @@ public class OpportunityService implements IOpportunityService {
                                                    throwable -> contactFallback(opportunityDTO.getContactId()));
 
         Account account = Account.parseFromDTO(accountDTO);
+
         Contact contact = new Contact(contactDTO.getName(),
                                       contactDTO.getPhoneNumber(),
                                       contactDTO.getEmail(),
                                       contactDTO.getCompanyName(),
                                       account);
+
+        try {
+            Product.valueOf(opportunityDTO.getProduct());
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a valid product type. Use BOX, HYBRID or FLATBED");
+        }
 
         Opportunity opportunity = new Opportunity(Product.valueOf(opportunityDTO.getProduct()),
                 opportunityDTO.getQuantity(),
