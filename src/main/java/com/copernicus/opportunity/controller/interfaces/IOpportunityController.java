@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IOpportunityController {
-    OpportunityDTO getOpportunity(Integer id, String authorizationHeader);
+    OpportunityDTO getOpportunity(Integer id);
 
-    List<OpportunityDTO> getAllOpportunities(String authorizationHeader);
+    List<OpportunityDTO> getAllOpportunities();
 
-    OpportunityDTO postOpportunity(OpportunityDTO opportunityDTO, String authorizationHeader);
+    OpportunityDTO postOpportunity(OpportunityDTO opportunityDTO);
 
-    OpportunityDTO putOpportunity(Integer id, OpportunityDTO opportunityDTO, String authorizationHeader);
+    OpportunityDTO putOpportunity(Integer id, OpportunityDTO opportunityDTO);
 
-    List<OpportunityDTO> findOpportunitiesBySalesRep(Integer salesRepId, Optional<String> status, String authorizationHeader);
+    List<OpportunityDTO> findOpportunitiesBySalesRep(Integer salesRepId, Optional<String> status);
 }

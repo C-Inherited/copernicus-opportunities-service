@@ -72,7 +72,12 @@ public class OpportunityService implements IOpportunityService {
 
     public OpportunityDTO postOpportunity(OpportunityDTO opportunityDTO) {
         Opportunity opportunity = createOpportunityFromDTO(opportunityDTO);
-        opportunity = opportunityRepository.save(opportunity);
+        try {
+            opportunity = opportunityRepository.save(opportunity);
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The contact id introduced has already an opportunity associated");
+        }
+
         opportunityDTO = OpportunityDTO.parseFromOpportunity(opportunity);
 
         return opportunityDTO;
@@ -85,9 +90,8 @@ public class OpportunityService implements IOpportunityService {
 
         Opportunity opportunity = createOpportunityFromDTO(opportunityDTO);
         opportunity.setId(id);
-        OpportunityDTO.parseFromOpportunity(opportunity);
-
-        opportunityRepository.save(opportunity);
+        opportunity = opportunityRepository.save(opportunity);
+        opportunityDTO = OpportunityDTO.parseFromOpportunity(opportunity);
 
         return opportunityDTO;
     }
@@ -120,6 +124,7 @@ public class OpportunityService implements IOpportunityService {
                                       contactDTO.getEmail(),
                                       contactDTO.getCompanyName(),
                                       account);
+        contact.setId(contactDTO.getId());
 
         try {
             Product.valueOf(opportunityDTO.getProduct());

@@ -18,27 +18,27 @@ public class OpportunityController implements IOpportunityController {
 
 
     @GetMapping("/opportunity/{id}")
-    public OpportunityDTO getOpportunity(@PathVariable Integer id, @RequestHeader(value = "Authorization") String authorizationHeader) {
+    public OpportunityDTO getOpportunity(@PathVariable Integer id) {
         return opportunityService.getOpportunity(id);
     }
 
     @GetMapping("/opportunity/all")
-    public List<OpportunityDTO> getAllOpportunities(@RequestHeader(value = "Authorization") String authorizationHeader) {
+    public List<OpportunityDTO> getAllOpportunities() {
         return opportunityService.getAllOpportunities();
     }
 
     @PostMapping("/opportunity")
-    public OpportunityDTO postOpportunity(@RequestBody OpportunityDTO opportunityDTO, @RequestHeader(value = "Authorization") String authorizationHeader) {
+    public OpportunityDTO postOpportunity(@RequestBody OpportunityDTO opportunityDTO) {
         return opportunityService.postOpportunity(opportunityDTO);
     }
 
     @PutMapping("/opportunity/{id}")
-    public OpportunityDTO putOpportunity(@PathVariable Integer id, @RequestBody OpportunityDTO opportunityDTO, @RequestHeader(value = "Authorization") String authorizationHeader) {
+    public OpportunityDTO putOpportunity(@PathVariable Integer id, @RequestBody OpportunityDTO opportunityDTO) {
         return opportunityService.putOpportunity(id, opportunityDTO);
     }
     
     @GetMapping("/opportunity/all/{salesRepId}")
-    public List<OpportunityDTO> findOpportunitiesBySalesRep(@PathVariable Integer salesRepId, @RequestParam Optional<String> status, @RequestHeader(value = "Authorization") String authorizationHeader) {
+    public List<OpportunityDTO> findOpportunitiesBySalesRep(@PathVariable Integer salesRepId, @RequestParam Optional<String> status) {
         return opportunityService.findOpportunitiesBySalesRep(salesRepId, status);
     }
 

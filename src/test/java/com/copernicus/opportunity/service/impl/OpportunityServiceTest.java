@@ -58,9 +58,6 @@ class OpportunityServiceTest {
         opportunityRepository.saveAll(List.of(opportunity1, opportunity2, opportunity3));
         contactRepository.saveAll(List.of(contact1,contact2, contact3));
 
-
-
-
         account1.setContactList(List.of(contact1,contact2));
         account2.setContactList(List.of(contact3));
 
@@ -104,6 +101,12 @@ class OpportunityServiceTest {
 
     @Test
     void postOpportunity() {
+        Account account = accountRepository.findAll().get(0);
+        Contact contact = new Contact("Mario", "999999999", "mario@mario.es", "Bros", account);
+        contact = contactRepository.save(contact);
+        OpportunityDTO opportunityDTO = new OpportunityDTO(null, "BOX", 40, contact.getId(), 1, account.getId(), "OPEN");
+        opportunityService.postOpportunity(opportunityDTO);
+        
     }
 
     @Test
