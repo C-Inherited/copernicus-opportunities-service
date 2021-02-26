@@ -4,6 +4,7 @@ import com.copernicus.opportunity.controller.interfaces.IOpportunityController;
 import com.copernicus.opportunity.dto.OpportunityDTO;
 import com.copernicus.opportunity.service.interfaces.IOpportunityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,11 +29,13 @@ public class OpportunityController implements IOpportunityController {
     }
 
     @PostMapping("/opportunity")
+    @ResponseStatus(HttpStatus.CREATED)
     public OpportunityDTO postOpportunity(@RequestBody OpportunityDTO opportunityDTO) {
         return opportunityService.postOpportunity(opportunityDTO);
     }
 
     @PutMapping("/opportunity/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public OpportunityDTO putOpportunity(@PathVariable Integer id, @RequestBody OpportunityDTO opportunityDTO) {
         return opportunityService.putOpportunity(id, opportunityDTO);
     }

@@ -46,7 +46,7 @@ public class OpportunityDTO {
         this.contactId = contactId;
         this.salesRepId = salesRepId;
         this.accountId = accountId;
-        this.status = status;
+        this.status = "OPEN";
     }
 
     public static OpportunityDTO parseFromOpportunity(Opportunity opportunity){

@@ -72,11 +72,8 @@ public class OpportunityService implements IOpportunityService {
 
     public OpportunityDTO postOpportunity(OpportunityDTO opportunityDTO) {
         Opportunity opportunity = createOpportunityFromDTO(opportunityDTO);
-        try {
-            opportunity = opportunityRepository.save(opportunity);
-        }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The contact id introduced has already an opportunity associated");
-        }
+
+        opportunity = opportunityRepository.save(opportunity);
 
         opportunityDTO = OpportunityDTO.parseFromOpportunity(opportunity);
 
@@ -112,10 +109,11 @@ public class OpportunityService implements IOpportunityService {
         CircuitBreaker accountCircuit = circuitBreakerFactory.create("account-service");
         CircuitBreaker contactCircuit = circuitBreakerFactory.create("contact-service");
 
-        AccountDTO accountDTO = accountCircuit.run(() -> accountClient.getAccount(opportunityDTO.getAccountId(), "Bearer "+ AuthOpportunityController.getAccountAuthOk()),
-                                                   throwable -> (AccountDTO) serviceFallback("account-service"));
+
         ContactDTO contactDTO = contactCircuit.run(() -> contactClient.getContact(opportunityDTO.getContactId(), "Bearer "+ AuthOpportunityController.getContactAuthOk()),
                                                    throwable -> (ContactDTO) serviceFallback("contact-service"));
+        AccountDTO accountDTO = accountCircuit.run(() -> accountClient.getAccount(opportunityDTO.getAccountId(), "Bearer "+ AuthOpportunityController.getAccountAuthOk()),
+                throwable -> (AccountDTO) serviceFallback("account-service"));
 
         Account account = Account.parseFromDTO(accountDTO);
 
@@ -131,6 +129,7 @@ public class OpportunityService implements IOpportunityService {
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a valid product type. Use BOX, HYBRID or FLATBED");
         }
+
 
         Opportunity opportunity = new Opportunity(Product.valueOf(opportunityDTO.getProduct()),
                 opportunityDTO.getQuantity(),

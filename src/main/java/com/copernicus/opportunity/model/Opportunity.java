@@ -16,7 +16,7 @@ public class Opportunity {
     private Product product;
     private Integer quantity;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name="contact_id")
     private Contact decisionMaker;
 

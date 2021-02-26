@@ -1,4 +1,4 @@
-package com.copernicus.opportunity.service.impl;
+package com.copernicus.opportunity.controller.impl;
 
 import com.copernicus.opportunity.dto.OpportunityDTO;
 import com.copernicus.opportunity.enums.Industry;
@@ -11,19 +11,28 @@ import com.copernicus.opportunity.repository.AccountRepository;
 import com.copernicus.opportunity.repository.ContactRepository;
 import com.copernicus.opportunity.repository.OpportunityRepository;
 import com.copernicus.opportunity.service.interfaces.IOpportunityService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-class OpportunityServiceTest {
+class OpportunityControllerTest {
 
     @Autowired
     OpportunityRepository opportunityRepository;
@@ -33,6 +42,10 @@ class OpportunityServiceTest {
     AccountRepository accountRepository;
     @Autowired
     IOpportunityService opportunityService;
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+    private MockMvc mockMvc;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     Optional<String> status1 = Optional.empty();
     Optional<String> status2 = Optional.of("OPEN");
@@ -40,7 +53,9 @@ class OpportunityServiceTest {
 
     @BeforeEach
     void setUp() {
-
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .build();
         Account account1 = new Account(Industry.OTHER, 40, "Albacete", "ESPAÑA");
         Account account2 = new Account(Industry.MEDICAL, 75, "Buguibugui", "EZPAÑA");
         accountRepository.saveAll(List.of(account1,account2));
@@ -81,55 +96,77 @@ class OpportunityServiceTest {
     }
 
     @Test
-    void getOpportunity() {
-        Integer id = opportunityRepository.findAll().get(0).getId();
-        System.out.println(id);
-        OpportunityDTO result = opportunityService.getOpportunity(id);
-        System.out.println(result.getProduct());
-        System.out.println(result.getQuantity());
-        assertEquals(40, result.getQuantity());
-        assertEquals(Product.BOX.toString(), result.getProduct());
-        assertEquals(1, result.getSalesRepId());
+    void getOpportunity() throws Exception {
+        Opportunity opportunity = opportunityRepository.findAll().get(0);
+
+        MvcResult result = mockMvc
+                .perform(get("/opportunity/"+opportunity.getId())
+                        .header("Authorization", "Bearer auth"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        System.out.println(result.getResponse().getContentAsString());
+
+        assertTrue(result.getResponse().getContentAsString().contains("BOX"));
     }
 
     @Test
-    void getAllOpportunities() {
-        List<OpportunityDTO> result = opportunityService.getAllOpportunities();
-        assertEquals(40, result.get(0).getQuantity());
-        assertEquals(Product.FLATBED.toString(), result.get(1).getProduct());
-        assertEquals(2, result.get(2).getSalesRepId());
+    void getAllOpportunities() throws Exception {
+
+        MvcResult result = mockMvc
+                .perform(get("/opportunity/all")
+                        .header("Authorization", "Bearer auth"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        System.out.println(result.getResponse().getContentAsString());
+
+        assertTrue(result.getResponse().getContentAsString().contains("BOX"));
+        assertTrue(result.getResponse().getContentAsString().contains("FLATBED"));
+        assertTrue(result.getResponse().getContentAsString().contains("HYBRID"));
     }
 
     @Test
-    void postOpportunity() {
+    void postOpportunity() throws Exception {
         Account account = accountRepository.findAll().get(0);
         Contact contact = new Contact("Mario", "999999999", "mario@mario.es", "Bros", account);
         contact = contactRepository.save(contact);
         OpportunityDTO opportunityDTO = new OpportunityDTO(null, "BOX", 40, contact.getId(), 1, account.getId(), "OPEN");
         opportunityService.postOpportunity(opportunityDTO);
-        
+
+        String body = objectMapper.writeValueAsString(opportunityDTO);
+
+        MvcResult result = mockMvc
+                .perform(post("/opportunity")
+                        .header("Authorization", "Bearer auth")
+                        .content(body).contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        assertTrue(result.getResponse().getContentAsString().contains("BOX"));
     }
 
     @Test
-    void putOpportunity() {
+    void putOpportunity() throws Exception {
         Opportunity opportunity = opportunityRepository.findAll().get(0);
         OpportunityDTO opportunityDTO = OpportunityDTO.parseFromOpportunity(opportunity);
         opportunityDTO.setQuantity(5654);
-        opportunityService.putOpportunity(opportunityDTO.getId(), opportunityDTO);
-    }
 
+        String body = objectMapper.writeValueAsString(opportunityDTO);
+
+        MvcResult result = mockMvc
+                .perform(put("/opportunity/"+opportunityDTO.getId())
+                        .header("Authorization", "Bearer auth")
+                        .content(body).contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isNoContent())
+                .andReturn();
+
+        assertTrue(result.getResponse().getContentAsString().contains("5654"));
+    }
 
     @Test
     void findOpportunitiesBySalesRep() {
-        List<OpportunityDTO> result = opportunityService.findOpportunitiesBySalesRep(2, status1);
-        assertEquals(23, result.get(0).getQuantity());
-        assertEquals(Product.HYBRID.toString(), result.get(1).getProduct());
-        assertEquals(2, result.get(1).getSalesRepId());
-    }
-
-    @Test
-    void findOpportunitiesBySalesRepWithStatus() {
-        List<OpportunityDTO> result = opportunityService.findOpportunitiesBySalesRep(2, status2);
-        assertEquals(0, result.size());
     }
 }
